@@ -8,13 +8,20 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const User =
-      localStorage.getItem("user") !== "undefined"
-        ? JSON.parse(localStorage.getItem("user"))
-        : localStorage.clear();
+    try {
+      const userItem = localStorage.getItem("user");
+      const User =
+        userItem && userItem !== "undefined" ? JSON.parse(userItem) : null;
 
-    if (!User) navigate("/login");
-  }, []);
+      if (!User) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   return (
     <Routes>
